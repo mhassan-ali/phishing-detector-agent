@@ -1,0 +1,18 @@
+From: "AcmeTrust Executive Services" <random-spammer@free-mail.example.org>
+Reply-To: executive.direct@free-mail.example.org
+To: employee@example.com
+Subject: Quick confidential request
+Date: Fri, 14 Nov 2026 14:00:00 +0000
+Message-ID: <spoof-ceo-777@free-mail.example.org>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=random-spammer@free-mail.example.org
+Received: from mail.free-mail.example.org (mail.free-mail.example.org [198.51.100.99]) by mx.example.com with ESMTP id ceo002; Fri, 14 Nov 2026 14:00:02 +0000
+Content-Type: text/plain; charset="utf-8"
+
+Hi,
+
+Are you available at your desk right now? I need you to handle an urgent confidential task for our department.
+Please reply directly to this email with your mobile number.
+
+Regards,
+Jane Doe
+CEO, AcmeTrust Services

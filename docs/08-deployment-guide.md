@@ -24,6 +24,9 @@ uv run phishguard scan-url "https://example.test"
 | `PHISHGUARD_REDACT_PII` | `true` | Redact before LLM |
 | `PHISHGUARD_MAX_UPLOAD_MB` | `10` | Upload cap |
 | `PHISHGUARD_RATE_LIMIT` | `30/minute` | Per API key |
+| `PHISHGUARD_TRUSTED_AUTHSERV_IDS` | none | Comma-separated trusted authserv-ids |
+| `PHISHGUARD_DOMAIN_AGE_ENABLED` | `false` | Enable domain age verification |
+| `PHISHGUARD_LLM_ENABLED` | `false` | Enable LLM content analyzer |
 | `LLM_MODEL` | `gemini/gemini-2.5-flash` | LiteLLM model string (verify current name) |
 | `GEMINI_API_KEY` | none | LLM access |
 | `VIRUSTOTAL_API_KEY`, `URLSCAN_API_KEY`, `GOOGLE_SAFE_BROWSING_KEY` | none | Optional intel |

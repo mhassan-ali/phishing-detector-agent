@@ -1,0 +1,18 @@
+From: "GlobalParcel Express" <dispatch@parcel-delivery.test>
+To: recipient@example.com
+Subject: Notice: Outstanding delivery fee for tracking #GP-88391
+Date: Fri, 14 Nov 2026 13:15:00 +0000
+Message-ID: <parcel-notice-88391@parcel-delivery.test>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=dispatch@parcel-delivery.test
+Received: from mail.parcel-delivery.test (mail.parcel-delivery.test [198.51.100.80]) by mx.example.com with ESMTP id pkg001; Fri, 14 Nov 2026 13:15:03 +0000
+Content-Type: text/plain; charset="utf-8"
+
+Hello,
+
+Your package #GP-88391 could not be delivered due to an outstanding customs dispatch fee of $2.50.
+
+Please pay the outstanding fee within 48 hours to schedule re-delivery:
+https://track.customs-fee-portal.test/pay?tracking=GP-88391
+
+Thank you,
+GlobalParcel Support

@@ -1,0 +1,20 @@
+From: "AcmeTrust Security" <alerts@acmetrust.test>
+Reply-To: support@untrusted-relay.test
+To: recipient@example.com
+Subject: URGENT: Verify Your AcmeTrust Account Immediately
+Date: Fri, 14 Nov 2026 12:00:00 +0000
+Message-ID: <urgent-security-999@acmetrust.test>
+Authentication-Results: mx.example.com; spf=fail smtp.mailfrom=attacker@untrusted-relay.test; dkim=fail; dmarc=fail action=none header.from=acmetrust.test
+Received: from mail.untrusted-relay.test (untrusted-relay.test [198.51.100.55]) by mx.example.com with ESMTP id spoof123; Fri, 14 Nov 2026 12:00:05 +0000
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html>
+<html>
+<body>
+  <h3>SECURITY ALERT: Unauthorized Login Detected</h3>
+  <p>Dear Customer,</p>
+  <p>We observed suspicious activity on your account. Your account will be suspended within 24 hours unless you verify your identity.</p>
+  <p><a href="https://verify.acmetrust-auth.test/login">Verify Account Credentials Now</a></p>
+  <p>Failure to act immediately will result in permanent account locking.</p>
+</body>
+</html>

@@ -1,0 +1,20 @@
+From: "Billing Support" <billing@invoice-sender.test>
+To: accounting@example.com
+Subject: Overdue Invoice Attachment
+Date: Fri, 14 Nov 2026 16:45:00 +0000
+Message-ID: <double-ext-303@invoice-sender.test>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=billing@invoice-sender.test
+Received: from mail.invoice-sender.test (mail.invoice-sender.test [198.51.100.33]) by mx.example.com with ESMTP id dbl303; Fri, 14 Nov 2026 16:45:02 +0000
+Content-Type: multipart/mixed; boundary="boundary-double-ext-789"
+
+--boundary-double-ext-789
+Content-Type: text/plain; charset="utf-8"
+
+Please see the attached overdue invoice details.
+--boundary-double-ext-789
+Content-Type: application/octet-stream; name="invoice_1092.pdf.exe"
+Content-Disposition: attachment; filename="invoice_1092.pdf.exe"
+Content-Transfer-Encoding: base64
+
+VGhpcyBpcyBhIGhhcm1sZXNzIHN5bnRoZXRpYyBwbGFjZWhvbGRlciB0ZXN0IGZpbGUu
+--boundary-double-ext-789--

@@ -123,11 +123,11 @@ Tick when implemented and tested.
 
 | Requirement group | Implemented | Tested | Documented |
 |---|---|---|---|
-| FR-ING | ☐ | ☐ | ☐ |
-| FR-HDR | ☐ | ☐ | ☐ |
-| FR-URL | ☐ | ☐ | ☐ |
-| FR-CNT | ☐ | ☐ | ☐ |
-| FR-ATT | ☐ | ☐ | ☐ |
+| FR-ING | ☑ (FR-ING-1 to FR-ING-7) | ☑ | ☑ |
+| FR-HDR | ☑ (FR-HDR-1 to FR-HDR-5) | ☑ | ☑ |
+| FR-URL | ☑ (FR-URL-1 to FR-URL-5) | ☑ | ☑ |
+| FR-CNT | ☑ (FR-CNT-1 to FR-CNT-3) | ☑ | ☑ |
+| FR-ATT | ☑ (FR-ATT-1 to FR-ATT-2) | ☑ | ☑ |
 | FR-INT | ☐ | ☐ | ☐ |
 | FR-ML | ☐ | ☐ | ☐ |
 | FR-AGT / FR-VER | ☐ | ☐ | ☐ |

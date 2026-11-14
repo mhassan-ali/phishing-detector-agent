@@ -1,0 +1,16 @@
+From: "Account Team" <service@acmetrust.test>
+To: user@example.com
+Subject: Please review your statement
+Date: Fri, 14 Nov 2026 16:10:00 +0000
+Message-ID: <homograph-notice-202@acmetrust.test>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=service@acmetrust.test
+Received: from mail.acmetrust.test (mail.acmetrust.test [198.51.100.22]) by mx.example.com with ESMTP id idn202; Fri, 14 Nov 2026 16:10:02 +0000
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html>
+<html>
+<body>
+  <p>Your monthly statement is ready to view.</p>
+  <p>Access your portal here: <a href="https://xn--cmetrust-06g.test/statements">View Statement Online</a></p>
+</body>
+</html>

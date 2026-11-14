@@ -1,0 +1,26 @@
+From: "AcmeStore Orders" <orders@store.example.com>
+To: recipient@example.com
+Subject: Order Receipt #987654
+Date: Fri, 14 Nov 2026 10:30:00 +0000
+Message-ID: <receipt-987654@store.example.com>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=orders@store.example.com; dkim=pass header.d=store.example.com; dmarc=pass
+Received: from mail.store.example.com (mail.store.example.com [192.0.2.10]) by mx.example.com with ESMTPS id rcpt001; Fri, 14 Nov 2026 10:30:02 +0000
+Content-Type: multipart/mixed; boundary="boundary-receipt-456"
+
+--boundary-receipt-456
+Content-Type: text/plain; charset="utf-8"
+
+Thank you for your order #987654 with AcmeStore.
+Total Amount: $42.00
+View receipt: https://store.example.com/orders/987654
+
+A PDF copy of your receipt is attached.
+--boundary-receipt-456
+Content-Type: application/pdf; name="receipt_987654.pdf"
+Content-Disposition: attachment; filename="receipt_987654.pdf"
+Content-Transfer-Encoding: base64
+
+JVBERi0xLjQKJcTl8uXrp/Og0MTGCjEgMCBvYmoKPDwgL1R5cGUgL0NhdGFsb2cgL1BhZ2Vz
+IDIgMCBSID4+CmVuZG9iamoyIDAgb2JqCjw8IC9UeXBlIC9QYWdlcyAvS2lkcyBbIDMgMCBS
+IF0gL0NvdW50IDEgPj4KZW5kb2JqCg==
+--boundary-receipt-456--

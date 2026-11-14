@@ -59,4 +59,3 @@ class SSRFBlockedError(SecurityError):
 
 class PromptInjectionDetectedError(SecurityError):
     """Raised when prompt injection patterns or phrases are detected."""
-

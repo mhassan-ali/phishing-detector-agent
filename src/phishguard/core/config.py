@@ -49,8 +49,20 @@ class Settings(BaseSettings):
         default="30/minute",
         description="Default client rate limit per API key (e.g. '30/minute').",
     )
+    PHISHGUARD_TRUSTED_AUTHSERV_IDS: str = Field(
+        default="",
+        description="Comma-separated trusted Authentication-Results authserv-id hostnames.",
+    )
+    PHISHGUARD_DOMAIN_AGE_ENABLED: bool = Field(
+        default=False,
+        description="Whether live or stub domain age lookup checks are enabled.",
+    )
 
     # LLM configuration
+    PHISHGUARD_LLM_ENABLED: bool = Field(
+        default=False,
+        description="Whether LLM semantic analysis is enabled.",
+    )
     LLM_MODEL: str = Field(
         default="gemini/gemini-2.5-flash",
         description="LiteLLM provider and model identifier.",
@@ -84,6 +96,13 @@ class Settings(BaseSettings):
         default="INFO",
         description="Minimum logging level.",
     )
+
+    @property
+    def trusted_authserv_ids_list(self) -> list[str]:
+        """Parsed list of trusted authserv-id hostnames."""
+        return [
+            s.strip().lower() for s in self.PHISHGUARD_TRUSTED_AUTHSERV_IDS.split(",") if s.strip()
+        ]
 
     @model_validator(mode="after")
     def validate_production_security(self) -> Self:

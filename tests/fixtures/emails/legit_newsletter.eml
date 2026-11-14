@@ -1,0 +1,35 @@
+From: "Weekly Digest" <newsletter@news.example.com>
+To: recipient@example.com
+Subject: Your Weekly Tech Update
+Date: Fri, 14 Nov 2026 09:00:00 +0000
+Message-ID: <msg-news-001@news.example.com>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=newsletter@news.example.com; dkim=pass header.d=news.example.com; dmarc=pass
+Received: from mail.news.example.com (mail.news.example.com [192.0.2.1]) by mx.example.com with ESMTPS id abc123; Fri, 14 Nov 2026 09:00:01 +0000
+Content-Type: multipart/alternative; boundary="boundary-newsletter-123"
+
+--boundary-newsletter-123
+Content-Type: text/plain; charset="utf-8"
+
+Hello Subscriber,
+
+Here is your weekly technology digest with curated articles and research summaries.
+Read online: https://news.example.com/digest/2026-11-14
+
+To unsubscribe, visit https://news.example.com/unsubscribe?user=12345
+
+Best regards,
+Editorial Team
+--boundary-newsletter-123
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>Your Weekly Tech Update</h2>
+  <p>Here is your weekly technology digest with curated articles and research summaries.</p>
+  <p><a href="https://news.example.com/digest/2026-11-14">Read online</a></p>
+  <hr>
+  <p><small><a href="https://news.example.com/unsubscribe?user=12345">Unsubscribe</a></small></p>
+</body>
+</html>
+--boundary-newsletter-123--

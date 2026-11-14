@@ -26,6 +26,26 @@ class Severity(StrEnum):
     CRITICAL = "critical"
 
 
+class ParseWarning(StrEnum):
+    """Stable identifiers for non-fatal email and content parsing warnings."""
+
+    MULTIPLE_AUTH_RESULTS = "multiple_auth_results"
+    MAX_PARTS_EXCEEDED = "max_parts_exceeded"
+    MAX_MIME_DEPTH_EXCEEDED = "max_mime_depth_exceeded"
+    MAX_URLS_EXCEEDED = "max_urls_exceeded"
+    MAX_ATTACHMENTS_EXCEEDED = "max_attachments_exceeded"
+    ATTACHMENT_OVERSIZED = "attachment_oversized"
+    MAX_BODY_CHARS_EXCEEDED = "max_body_chars_exceeded"
+    MAX_HEADERS_EXCEEDED = "max_headers_exceeded"
+    MAX_RECEIVED_HOPS_EXCEEDED = "max_received_hops_exceeded"
+    HEADER_VALUE_TRUNCATED = "header_value_truncated"
+    CHARSET_DECODE_ERROR = "charset_decode_error"
+    HTML_PARSE_ERROR = "html_parse_error"
+    MALFORMED_MIME = "malformed_mime"
+    MALFORMED_HEADER = "malformed_header"
+    SUSPICIOUS_MIME_RECURSION = "suspicious_mime_recursion"
+
+
 class IOC(BaseModel):
     """Indicator of compromise (IOC), defanged for safe reporting."""
 
@@ -133,8 +153,75 @@ class AttachmentMetadata(BaseModel):
     sha256: str = Field(..., description="SHA-256 digest of attachment content.")
 
 
+class NormalizedURL(BaseModel):
+    """Canonical normalized URL representation with structural decomposition."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    raw_url: str = Field(..., description="Original raw URL before normalization.")
+    url: str = Field(..., description="Canonical normalized URL string without userinfo.")
+    scheme: str = Field(..., description="Normalized scheme: http or https.")
+    host: str = Field(..., description="Normalized lowercase hostname.")
+    host_unicode: str = Field(..., description="Decoded Unicode representation of hostname.")
+    host_punycode: str = Field(..., description="ASCII IDNA / Punycode representation.")
+    subdomain: str = Field(default="", description="Subdomain component (e.g. 'mail').")
+    domain: str = Field(..., description="Second-level or registered name component.")
+    suffix: str = Field(default="", description="Public suffix (e.g. 'com', 'co.uk').")
+    registered_domain: str = Field(
+        ..., description="Complete registered domain (e.g. 'example.com')."
+    )
+    port: int | None = Field(default=None, description="Explicit port number if non-default.")
+    path: str = Field(default="", description="Normalized path component.")
+    query: str = Field(default="", description="Sanitized query string without tracking tags.")
+    has_tracking_params: bool = Field(
+        default=False, description="Whether tracking parameters were stripped."
+    )
+    is_ip_literal: bool = Field(
+        default=False, description="Whether the host is an IPv4 or IPv6 address."
+    )
+    has_userinfo: bool = Field(
+        default=False, description="Whether the URL contained credentials (user:pass@)."
+    )
+    is_idn: bool = Field(
+        default=False, description="Whether host contains internationalized characters."
+    )
+    has_punycode: bool = Field(
+        default=False, description="Whether host starts with or contains 'xn--'."
+    )
+    ip_obfuscated: bool = Field(
+        default=False,
+        description="Whether an IPv4 host used decimal, octal, or hex obfuscation.",
+    )
+    suffix_known: bool = Field(
+        default=True,
+        description="Whether public suffix was found in PSL (False for RFC 2606 .test domains).",
+    )
+
+
+class ExtractedURL(BaseModel):
+    """URL extracted from message body or headers with contextual metadata."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    raw_url: str = Field(..., description="Raw extracted URL string.")
+    normalized_url: NormalizedURL = Field(
+        ..., description="Structured canonical normalization of the URL."
+    )
+    visible_text: str | None = Field(
+        default=None, description="Visible anchor link text if extracted from HTML."
+    )
+    link_text_mismatch: bool = Field(
+        default=False,
+        description="True if visible text looks like a domain different from href target.",
+    )
+    source_locations: list[str] = Field(
+        default_factory=list,
+        description="List of locations where URL was observed (e.g. 'body_plain', 'html_anchor').",
+    )
+
+
 class ParsedEmail(BaseModel):
-    """Structured representation of a parsed email."""
+    """Structured representation of a parsed email or text submission."""
 
     model_config = ConfigDict(extra="forbid")
 
@@ -149,19 +236,26 @@ class ParsedEmail(BaseModel):
     received_chain: list[str] = Field(
         default_factory=list, description="Ordered list of Received header hop entries."
     )
-    auth_results: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Parsed Authentication-Results headers (SPF, DKIM, DMARC).",
+    auth_results: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="Ordered Authentication-Results headers with position indices.",
     )
     body_plain: str = Field(default="", description="Extracted plain text body content.")
     body_html: str = Field(default="", description="Extracted HTML body content.")
-    urls: list[str] = Field(
-        default_factory=list, description="All unique URLs extracted from message bodies."
+    extracted_urls: list[ExtractedURL] = Field(
+        default_factory=list, description="All extracted and normalized URLs with context."
+    )
+    other_schemes: list[str] = Field(
+        default_factory=list,
+        description="Non-http(s) scheme URLs encountered (e.g. javascript:, data:, file:).",
     )
     attachments: list[AttachmentMetadata] = Field(
         default_factory=list, description="Enumerated attachment metadata entries."
     )
-    parse_warnings: list[str] = Field(
-        default_factory=list, description="Non-fatal warnings encountered during MIME parsing."
+    parse_warnings: list[ParseWarning] = Field(
+        default_factory=list, description="Non-fatal warnings encountered during parsing."
+    )
+    raw_headers: dict[str, list[str]] = Field(
+        default_factory=dict, description="Preserved raw header key-value occurrences."
     )
     sha256: str = Field(default="", description="SHA-256 digest of raw email input.")

@@ -6,8 +6,8 @@
 |---|---|---|---|---|
 | 0 | Rules, charter, docs skeleton | AGENTS.md, docs 01-09, ADRs | n/a | ✅ (this package) |
 | 1 | Foundations | Layout, config, schemas, logging, tooling | NFR-MNT-* | ✅ |
-| 2 | Ingestion & parsing | EML parser, URL extractor, normalizer | FR-ING-* | ⬜ |
-| 3 | Analyzers | Header, URL, content, attachment | FR-HDR-*, FR-URL-*, FR-CNT-*, FR-ATT-* | ⬜ |
+| 2 | Ingestion & parsing | EML parser, URL extractor, normalizer | FR-ING-* | ✅ |
+| 3 | Analyzers | Header, URL, content, attachment | FR-HDR-*, FR-URL-*, FR-CNT-*, FR-ATT-* | ✅ |
 | 4 | Threat intel | Providers, cache, rate limits | FR-INT-* | ⬜ |
 | 5 | ML model | Features, training, model card | FR-ML-* | ⬜ |
 | 6 | Agent orchestration | LangGraph, verdict rubric, CLI | FR-AGT-*, FR-VER-* | ⬜ |

@@ -1,0 +1,11 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Truncated MIME Test
+Date: Fri, 14 Nov 2026 17:00:00 +0000
+Message-ID: <trunc-001@example.com>
+Content-Type: multipart/mixed; boundary="trunc-boundary-999"
+
+--trunc-boundary-999
+Content-Type: text/plain; charset="utf-8"
+
+This is partial content that gets cut off without closing boundary.

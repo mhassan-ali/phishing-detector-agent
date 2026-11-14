@@ -9,6 +9,7 @@ from phishguard.core.schemas import (
     AttachmentMetadata,
     Evidence,
     ParsedEmail,
+    ParseWarning,
     ScanRequest,
     Severity,
     Verdict,
@@ -239,10 +240,11 @@ def test_parsed_email_schema_concrete_fields() -> None:
         date="2026-11-14T10:00:00Z",
         message_id="<msg-123@example.com>",
         received_chain=["from mail.example.com by mx.google.com"],
-        auth_results={"dmarc": "pass", "spf": "pass"},
+        auth_results=[{"index": 0, "header": "Authentication-Results", "dmarc": "pass"}],
         body_plain="Please see attached invoice.",
         body_html="<p>Please see attached invoice.</p>",
-        urls=["https://example.com/invoice"],
+        extracted_urls=[],
+        other_schemes=[],
         attachments=[
             AttachmentMetadata(
                 filename="doc.pdf",
@@ -251,7 +253,8 @@ def test_parsed_email_schema_concrete_fields() -> None:
                 sha256="abcdef123456",
             )
         ],
-        parse_warnings=[],
+        parse_warnings=[ParseWarning.MULTIPLE_AUTH_RESULTS],
+        raw_headers={"Subject": ["Important Notice"]},
         sha256="hash123",
     )
     assert parsed.from_addr == "user@example.com"
@@ -274,4 +277,3 @@ def test_new_scan_id_uniqueness_and_format() -> None:
     # Verify hex characters only
     int(id1, 16)
     int(id2, 16)
-

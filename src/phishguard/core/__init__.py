@@ -17,6 +17,7 @@ from phishguard.core.errors import (
     URLExtractionError,
     ValidationError,
 )
+from phishguard.core.llm import FakeLLMClient, LiteLLMClient, LLMClient
 from phishguard.core.logging import (
     bind_scan_id,
     clear_scan_id,
@@ -28,12 +29,16 @@ from phishguard.core.schemas import (
     AnalyzerResult,
     AttachmentMetadata,
     Evidence,
+    ExtractedURL,
+    NormalizedURL,
     ParsedEmail,
+    ParseWarning,
     ScanRequest,
     Severity,
     Verdict,
     new_scan_id,
 )
+from phishguard.core.untrusted import wrap_untrusted_content
 
 __all__ = [
     "AnalyzerError",
@@ -42,9 +47,15 @@ __all__ = [
     "ConfigurationError",
     "EmailParseError",
     "Evidence",
+    "ExtractedURL",
+    "FakeLLMClient",
     "IOC",
     "IngestionError",
+    "LLMClient",
     "LLMError",
+    "LiteLLMClient",
+    "NormalizedURL",
+    "ParseWarning",
     "ParsedEmail",
     "PhishGuardError",
     "PromptInjectionDetectedError",
@@ -65,4 +76,5 @@ __all__ = [
     "get_logger",
     "get_settings",
     "new_scan_id",
+    "wrap_untrusted_content",
 ]

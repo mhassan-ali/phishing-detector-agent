@@ -1,0 +1,20 @@
+From: "Service Notification" <notice@auth-service.test>
+To: user@example.com
+Subject: Update your payment information
+Date: Fri, 14 Nov 2026 15:20:00 +0000
+Message-ID: <mismatch-link-101@auth-service.test>
+Authentication-Results: mx.example.com; spf=pass smtp.mailfrom=notice@auth-service.test
+Received: from mail.auth-service.test (mail.auth-service.test [198.51.100.12]) by mx.example.com with ESMTP id mis101; Fri, 14 Nov 2026 15:20:02 +0000
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html>
+<html>
+<body>
+  <p>Dear Valued Client,</p>
+  <p>Your billing information requires updating.</p>
+  <p>Please log in securely to verify:
+     <a href="https://harvest-credentials.test/login">https://secure.acmetrust.test/login</a>
+  </p>
+  <p>Thank you.</p>
+</body>
+</html>

@@ -1,0 +1,70 @@
+brands:
+  - name: "AcmeTrust"
+    domains:
+      - "acmetrust.test"
+      - "acmetrust.example.com"
+    keywords:
+      - "acmetrust"
+      - "acme-trust"
+
+  - name: "GlobalParcel"
+    domains:
+      - "parcel-delivery.test"
+      - "globalparcel.test"
+    keywords:
+      - "globalparcel"
+      - "global-parcel"
+
+  - name: "ApexBank"
+    domains:
+      - "apexbank.test"
+      - "apexbank.example.com"
+    keywords:
+      - "apexbank"
+      - "apex-bank"
+
+  - name: "PayPal"
+    domains:
+      - "paypal.com"
+      - "paypal-community.com"
+    keywords:
+      - "paypal"
+
+  - name: "Google"
+    domains:
+      - "google.com"
+      - "accounts.google.com"
+      - "gmail.com"
+    keywords:
+      - "google"
+
+  - name: "Microsoft"
+    domains:
+      - "microsoft.com"
+      - "live.com"
+      - "office.com"
+      - "outlook.com"
+    keywords:
+      - "microsoft"
+      - "office365"
+
+  - name: "Apple"
+    domains:
+      - "apple.com"
+      - "icloud.com"
+    keywords:
+      - "apple"
+      - "icloud"
+
+  - name: "Amazon"
+    domains:
+      - "amazon.com"
+      - "aws.amazon.com"
+    keywords:
+      - "amazon"
+
+  - name: "Netflix"
+    domains:
+      - "netflix.com"
+    keywords:
+      - "netflix"

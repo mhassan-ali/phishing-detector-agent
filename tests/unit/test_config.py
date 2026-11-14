@@ -115,10 +115,26 @@ def test_invalid_intel_ttl_rejected() -> None:
         Settings(_env_file=None, INTEL_CACHE_TTL_HOURS=0)
 
 
+def test_phase3_config_fields() -> None:
+    """Verify Phase 3 configuration fields and trusted authserv IDs parsing."""
+    settings = Settings(
+        _env_file=None,
+        PHISHGUARD_LLM_ENABLED=True,
+        PHISHGUARD_TRUSTED_AUTHSERV_IDS="mx.google.com, gateway.corp.local , MX.OUTLOOK.COM",
+        PHISHGUARD_DOMAIN_AGE_ENABLED=True,
+    )
+    assert settings.PHISHGUARD_LLM_ENABLED is True
+    assert settings.PHISHGUARD_DOMAIN_AGE_ENABLED is True
+    assert settings.trusted_authserv_ids_list == [
+        "mx.google.com",
+        "gateway.corp.local",
+        "mx.outlook.com",
+    ]
+
+
 def test_get_settings_cached() -> None:
     """Verify get_settings returns a singleton Settings instance."""
     get_settings.cache_clear()
     s1 = get_settings()
     s2 = get_settings()
     assert s1 is s2
-
