@@ -1,0 +1,68 @@
+"""Core foundations: configuration, domain schemas, error types, and logging."""
+
+from phishguard.core.config import Settings, get_settings
+from phishguard.core.errors import (
+    AnalyzerError,
+    ConfigurationError,
+    EmailParseError,
+    IngestionError,
+    LLMError,
+    PhishGuardError,
+    PromptInjectionDetectedError,
+    ProviderUnavailableError,
+    RateLimitExceededError,
+    SecurityError,
+    SSRFBlockedError,
+    ThreatIntelError,
+    URLExtractionError,
+    ValidationError,
+)
+from phishguard.core.logging import (
+    bind_scan_id,
+    clear_scan_id,
+    configure_logging,
+    get_logger,
+)
+from phishguard.core.schemas import (
+    IOC,
+    AnalyzerResult,
+    AttachmentMetadata,
+    Evidence,
+    ParsedEmail,
+    ScanRequest,
+    Severity,
+    Verdict,
+    new_scan_id,
+)
+
+__all__ = [
+    "AnalyzerError",
+    "AnalyzerResult",
+    "AttachmentMetadata",
+    "ConfigurationError",
+    "EmailParseError",
+    "Evidence",
+    "IOC",
+    "IngestionError",
+    "LLMError",
+    "ParsedEmail",
+    "PhishGuardError",
+    "PromptInjectionDetectedError",
+    "ProviderUnavailableError",
+    "RateLimitExceededError",
+    "SSRFBlockedError",
+    "ScanRequest",
+    "SecurityError",
+    "Settings",
+    "Severity",
+    "ThreatIntelError",
+    "URLExtractionError",
+    "ValidationError",
+    "Verdict",
+    "bind_scan_id",
+    "clear_scan_id",
+    "configure_logging",
+    "get_logger",
+    "get_settings",
+    "new_scan_id",
+]
