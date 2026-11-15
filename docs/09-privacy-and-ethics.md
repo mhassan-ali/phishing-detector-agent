@@ -23,7 +23,13 @@ the user and third parties.
 Submitting URLs/hashes to VirusTotal, urlscan.io, etc. may make them visible to those services (urlscan scans can
 be public). Default to **private** scan visibility where supported, and warn users in UI/README.
 
-### Free-Tier LLM Data Usage Policy
+### Threat Intelligence Transmission & Query Stripping Policy
+- **Indicator-Only Boundary**: Only derived indicators (attachment SHA-256 hashes, registered domains, and URLs) are transmitted to threat-intelligence APIs. Email bodies, message headers, and raw attachment byte streams are never sent.
+- **Query & Fragment Stripping by Default**: When querying external threat-intel APIs (VirusTotal, URLhaus, Google Safe Browsing, urlscan.io), URLs have all query parameters (`?token=...`) and fragments (`#anchor`) stripped by default unless `PHISHGUARD_INTEL_SEND_FULL_URLS=true` is explicitly set. This prevents accidental transmission of sensitive authentication tokens, tracking identifiers, or confidential query values.
+- **Strictly Search-Only Policy on urlscan.io**: PhishGuard only searches historical public scans (`GET /api/v1/search/`). It never invokes `POST /api/v1/scan/` to avoid triggering live web crawlers against untrusted infrastructure.
+- **Google Safe Browsing Full URL Notice**: The Google Safe Browsing v4 Lookup API transmits URL paths directly to Google. When using Safe Browsing, query parameters are stripped per policy, but the hostname and path are processed by Google in accordance with Google's API Terms.
+- **Non-Commercial Public Tiers**: Free VirusTotal and Google Safe Browsing API keys are licensed for non-commercial evaluation. Commercial deployments require appropriate enterprise licenses.
+
 - **Free-Tier LLM Providers**: Commercial LLM APIs operating under free tiers (such as Google AI Studio free tier) reserve the right to log, inspect, and use submitted prompts and completions for human review and model training.
 - **Sensitive Email Advisory**: Users and operators MUST NOT submit sensitive, confidential, legally privileged, or personally identifiable email content using free-tier LLM API keys.
 - **Paid / Enterprise Tier**: Organizations handling proprietary communications should exclusively configure paid API keys (where provider terms guarantee zero data retention and no model training on customer payloads) or utilize self-hosted models.

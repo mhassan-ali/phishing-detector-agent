@@ -291,6 +291,24 @@ class URLAnalyzer:
                         raw_data={"host": host_clean},
                     )
                 )
+            elif matched_skeleton_brand and domain_label != skeleton:
+                # Reclassify leetspeak-only matches (ASCII domain whose skeleton equals a brand)
+                # as typosquat evidence, not URL_HOMOGRAPH_CONFUSABLE
+                evidence.append(
+                    create_evidence(
+                        source=self.name,
+                        code=EvidenceCode.URL_TYPOSQUAT_BRAND,
+                        severity=Severity.HIGH,
+                        confidence=0.92,
+                        description="Domain exhibits high similarity to a brand.",
+                        raw_data={
+                            "brand": matched_skeleton_brand,
+                            "registered_domain": target_reg,
+                            "technique": "leetspeak",
+                            "skeleton": skeleton,
+                        },
+                    )
+                )
 
             # 3. Typosquatting vs Brand Reference List
             # Skip if IP or if domain is in legitimate brand allowlist

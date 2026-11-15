@@ -1,5 +1,7 @@
 """Unit tests for URL extraction, link-text mismatch detection, and HTML resilience."""
 
+import pytest
+
 from phishguard.core.schemas import ParsedEmail
 from phishguard.ingest.extractor import (
     extract_urls,
@@ -175,17 +177,54 @@ def test_empty_content_extraction() -> None:
     assert html_to_text("") == ""
 
 
-def test_html_to_text_parser_exception_fallback(monkeypatch) -> None:
+def test_html_to_text_parser_exception_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     """Verify html_to_text falls back to regex tag stripping if BeautifulSoup raises."""
-    import bs4
 
-    def mock_soup_init(*args, **kwargs):
+    def mock_soup_init(*args: object, **kwargs: object) -> None:
         raise RecursionError("Simulated recursion")
 
-    monkeypatch.setattr(bs4, "BeautifulSoup", mock_soup_init)
+    monkeypatch.setattr("phishguard.ingest.extractor.BeautifulSoup", mock_soup_init)
     res = html_to_text("<p>Fallback <b>Content</b></p>")
     assert "Fallback" in res
     assert "Content" in res
+
+
+def test_extract_urls_from_content_exception(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify extract_urls_from_content records HTML_PARSE_ERROR when parser raises."""
+    from phishguard.core.schemas import ParseWarning
+
+    def mock_soup_init(*args: object, **kwargs: object) -> None:
+        raise RecursionError("Simulated recursion")
+
+    monkeypatch.setattr("phishguard.ingest.extractor.BeautifulSoup", mock_soup_init)
+    urls, other, warnings = extract_urls_from_content(body_html="<p>Test</p>")
+    assert ParseWarning.HTML_PARSE_ERROR in warnings
+
+
+def test_extract_urls_propagates_schemes() -> None:
+    """Verify extract_urls populates other_schemes on ParsedEmail."""
+    parsed = ParsedEmail(
+        body_html='<p><a href="javascript:alert(1)">Click</a></p>',
+        sha256="dummy",
+    )
+    extract_urls(parsed)
+    assert any("javascript" in s for s in parsed.other_schemes)
+
+
+def test_extract_urls_propagates_warnings(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify extract_urls updates parse_warnings on ParsedEmail when parser fails."""
+    from phishguard.core.schemas import ParseWarning
+
+    def mock_soup_init(*args: object, **kwargs: object) -> None:
+        raise RecursionError("Simulated recursion")
+
+    monkeypatch.setattr("phishguard.ingest.extractor.BeautifulSoup", mock_soup_init)
+    parsed = ParsedEmail(
+        body_html="<p>broken html</p>",
+        sha256="dummy",
+    )
+    extract_urls(parsed)
+    assert ParseWarning.HTML_PARSE_ERROR in parsed.parse_warnings
 
 
 def test_extractor_edge_cases() -> None:

@@ -44,8 +44,17 @@ Include: confusion matrices, ROC/PR curves, score distribution by label, thresho
 | Adversarial pass rate | 100% | | |
 
 ## 6. Error analysis
-- Top false positives (with causes and proposed fixes)
-- Top false negatives (with causes and proposed fixes)
+- Top false positives (with causes and proposed fixes):
+  - *None observed in baseline fixture suite.* Legitimate fixtures (`legit_newsletter.eml`, `legit_receipt.eml`) generate only `HDR_DMARC_PASS` (`Severity.INFO`).
+- Top false negatives (with causes and proposed fixes):
+  - **`fake_delivery.eml` (KNOWN FALSE NEGATIVE in static heuristics)**:
+    - *Observed behavior*: Produces 0 evidence items under offline heuristic analyzers (`HeaderAnalyzer`, `URLAnalyzer`, `AttachmentAnalyzer`).
+    - *Cause*: The lure utilizes an unknown brand persona (`GlobalParcel Express`), an attacker-controlled domain (`parcel-delivery.test`) that successfully passes SPF authentication, and a non-typosquatted destination URL (`customs-fee-portal.test`).
+    - *Resolution / Architectural mitigation*: Per design, static heuristics are not meant to catch this alone; detection relies on multi-layered defense:
+      1. `ContentAnalyzer` (LLM-based detection of customs fee pressure, urgency, and package lure).
+      2. Threat intelligence (URL lookup on URLhaus / Google Safe Browsing / VirusTotal in Phase 4).
+      3. ML URL feature classification (Phase 5).
+      *Do not add "GlobalParcel" to `brands.yaml` to artificially force heuristic detection.*
 - Slice analysis (language, brand, URL type, with/without attachments)
 
 ## 7. Robustness

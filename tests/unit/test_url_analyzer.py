@@ -150,10 +150,38 @@ def test_url_analyzer_typosquatting_variants() -> None:
     res3 = analyzer.run(ParsedEmail(extracted_urls=[u3], sha256="dummy"))
     assert EvidenceCode.URL_TYPOSQUAT_BRAND in [e.code for e in res3.evidence]
 
-    # 4. Fuzzy edit distance typosquatting (paypa1 -> paypal)
+    # 4. Leetspeak digit substitution (paypa1 -> paypal, g00gle -> google)
     u4 = _make_extracted_url("https://paypa1.com/signin")
     res4 = analyzer.run(ParsedEmail(extracted_urls=[u4], sha256="dummy"))
-    assert EvidenceCode.URL_TYPOSQUAT_BRAND in [e.code for e in res4.evidence]
+    codes4 = [e.code for e in res4.evidence]
+    assert EvidenceCode.URL_TYPOSQUAT_BRAND in codes4
+    assert EvidenceCode.URL_HOMOGRAPH_CONFUSABLE not in codes4
+
+
+def test_url_analyzer_leetspeak_vs_ordinary_digits() -> None:
+    """Reclassify leetspeak as typosquatting and verify ordinary digits do not trigger."""
+    analyzer = URLAnalyzer()
+
+    # Leetspeak: g00gle.com -> skeleton google -> brand Google
+    u_leet = _make_extracted_url("https://g00gle.com/search")
+    res_leet = analyzer.run(ParsedEmail(extracted_urls=[u_leet], sha256="dummy"))
+    codes_leet = [e.code for e in res_leet.evidence]
+    assert EvidenceCode.URL_TYPOSQUAT_BRAND in codes_leet
+    assert EvidenceCode.URL_HOMOGRAPH_CONFUSABLE not in codes_leet
+
+    # Ordinary domains with digits (web3, cloud24) must NOT trigger brand or homograph evidence
+    u_web3 = _make_extracted_url("https://web3-portal.test/dashboard")
+    res_web3 = analyzer.run(ParsedEmail(extracted_urls=[u_web3], sha256="dummy"))
+    codes_web3 = [e.code for e in res_web3.evidence]
+    assert EvidenceCode.URL_TYPOSQUAT_BRAND not in codes_web3
+    assert EvidenceCode.URL_HOMOGRAPH_CONFUSABLE not in codes_web3
+    assert EvidenceCode.URL_SAME_LABEL_DIFF_TLD not in codes_web3
+
+    u_cloud = _make_extracted_url("https://cloud24.test/status")
+    res_cloud = analyzer.run(ParsedEmail(extracted_urls=[u_cloud], sha256="dummy"))
+    codes_cloud = [e.code for e in res_cloud.evidence]
+    assert EvidenceCode.URL_TYPOSQUAT_BRAND not in codes_cloud
+    assert EvidenceCode.URL_HOMOGRAPH_CONFUSABLE not in codes_cloud
 
 
 @pytest.mark.parametrize("brand", load_brands())

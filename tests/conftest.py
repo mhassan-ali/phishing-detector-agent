@@ -21,8 +21,18 @@ CLEAN_ENV_VARS = [
     "LLM_MODEL",
     "GEMINI_API_KEY",
     "VIRUSTOTAL_API_KEY",
+    "URLHAUS_AUTH_KEY",
     "URLSCAN_API_KEY",
     "GOOGLE_SAFE_BROWSING_KEY",
+    "VIRUSTOTAL_ENABLED",
+    "URLHAUS_ENABLED",
+    "OPENPHISH_ENABLED",
+    "SAFEBROWSING_ENABLED",
+    "URLSCAN_ENABLED",
+    "PHISHGUARD_INTEL_DEADLINE_SECONDS",
+    "PHISHGUARD_INTEL_MAX_INDICATORS",
+    "PHISHGUARD_INTEL_SEND_FULL_URLS",
+    "OPENPHISH_MAX_FEED_BYTES",
     "INTEL_CACHE_TTL_HOURS",
     "LOG_LEVEL",
 ]
@@ -54,6 +64,23 @@ def clean_environment(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, 
     for var in list(os.environ.keys()):
         if var.startswith("PHISHGUARD_") or var in CLEAN_ENV_VARS:
             monkeypatch.delenv(var, raising=False)
+
+    # Reset threat intel rate-limiting token buckets for test isolation
+    try:
+        from phishguard.intel.client import (
+            SAFEBROWSING_BUCKET,
+            URLHAUS_BUCKET,
+            URLSCAN_BUCKET,
+            VT_BUCKET,
+        )
+
+        VT_BUCKET.tokens = VT_BUCKET.capacity
+        URLHAUS_BUCKET.tokens = URLHAUS_BUCKET.capacity
+        URLSCAN_BUCKET.tokens = URLSCAN_BUCKET.capacity
+        SAFEBROWSING_BUCKET.tokens = SAFEBROWSING_BUCKET.capacity
+    except ImportError:
+        pass
+
     yield
 
 

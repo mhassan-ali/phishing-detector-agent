@@ -5,6 +5,21 @@ versioning: [SemVer](https://semver.org/).
 
 ## [Unreleased]
 ### Added
+- Phase 4 (Threat intelligence):
+  - Sub-Phase 4.0: Closed remaining edge-case coverage gaps across ingestion and base analyzer infrastructure; reclassified ASCII-only leetspeak lookalikes as `URL_TYPOSQUAT_BRAND` while reserving `URL_HOMOGRAPH_CONFUSABLE` for mixed-script/IDN confusables; documented `fake_delivery.eml` as a known false negative in static heuristics; verified `pip-audit` cleanly audits `litellm`.
+  - Common threat intelligence protocols and models in `src/phishguard/intel/base.py` (`Indicator`, `IntelResult`, `IntelProvider` protocol, deterministic `compute_indicator_hash`).
+  - Hardened outbound client factory in `src/phishguard/intel/client.py`: enforced host allowlist (`ALLOWED_INTEL_HOSTS`), `HostNotAllowedError` boundary, HTTPS enforcement, TLS verification, `follow_redirects=False`, `trust_env=False`, 1 MB response payload cap, non-blocking token bucket rate limiters, global concurrency semaphore, secret redaction in URLs/logs, and backoff with jitter and circuit breaker on exhausted 429 retries.
+  - Persistent SQLite cache in `src/phishguard/intel/cache.py` using SQLAlchemy 2.x and WAL mode: zero plaintext indicator storage (hashes only), capped threat types and summaries without raw responses, differential TTL (1h for clean/unknown, 24h for positive findings), accessed via `asyncio.to_thread`.
+  - Pure indicator selector in `src/phishguard/intel/selector.py`: prioritized ordering (attachment SHA-256 hashes first for `FR-ATT-3`, flagged URLs second, remaining domains third); automatic query string and fragment stripping by default; loopback, private, link-local, and reserved IP filtering (`is_private_or_reserved_ip`).
+  - Threat intelligence providers:
+    - VirusTotal v3 (`virustotal.py`): File hash reputation lookup (`FR-ATT-3`), domain/URL reputation; HTTP 404 handled as unknown without submissions; zero POST calls made; per-scan lookup cap enforcement.
+    - abuse.ch URLhaus (`urlhaus.py`): Exact URL, host, and payload hash queries using authenticated `URLHAUS_AUTH_KEY`.
+    - OpenPhish (`openphish.py`): Community feed stream check with configurable byte cap (`OPENPHISH_MAX_FEED_BYTES`), failing soft with error if feed is truncated.
+    - Google Safe Browsing v4 (`safebrowsing.py`): `threatMatches:find` queries with query key redaction and non-commercial disclaimer.
+    - urlscan.io (`urlscan.py`): Strictly search-only (`GET /api/v1/search/`), query escaping against quotes and operator injection, zero raw page content copied to evidence.
+  - Threat intelligence analyzer in `src/phishguard/intel/analyzer.py`: concurrent orchestration of providers with `PHISHGUARD_INTEL_DEADLINE_SECONDS` deadline; statuses (`ok`, `partial`, `skipped`); evidence emission adhering to `INTEL_CONFIRMED_MALICIOUS` (exact URLs or file hashes with $\ge 5$ engines), `INTEL_SUSPICIOUS` (domain/host hits), and `INTEL_NOT_LISTED` (emitted at most once per scan).
+  - ADR-0007 (`docs/adr/0007-google-safe-browsing-v4-lookup.md`) selecting Safe Browsing v4 Lookup API over v5 hash-prefix synchronization.
+  - Unit and integration tests with `respx` mocks under offline socket guard verifying all provider branches, allowlist checks, cache hits/expiry, selector priority/capping, and analyzer statuses.
 - Phase 3 (Analyzers):
   - Sub-Phase 3.0: Closed error-handling coverage gaps across `ingest/extractor.py`, `ingest/normalizer.py`, and `ingest/parser.py`; added linear ReDoS verification test in `tests/adversarial/test_redos.py` (100k-char crafted payload processed in < 1.0s).
   - Package reference data in `src/phishguard/data/` (`brands.yaml`, `shorteners.yaml`, `suspicious_tlds.yaml`) loaded via `importlib.resources`.

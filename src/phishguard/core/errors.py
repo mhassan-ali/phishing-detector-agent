@@ -45,6 +45,10 @@ class ProviderUnavailableError(ThreatIntelError):
     """Raised when a threat intelligence provider is unreachable or returns a server error."""
 
 
+class HostNotAllowedError(ThreatIntelError):
+    """Raised when an outbound HTTP request targets a host outside the allowed intel hosts list."""
+
+
 class LLMError(PhishGuardError):
     """Raised when an LLM provider fails, times out, or returns unparseable content."""
 

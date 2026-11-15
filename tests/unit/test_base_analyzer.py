@@ -3,6 +3,8 @@
 import asyncio
 from typing import Any
 
+import pytest
+
 from phishguard.analyzers.base import (
     create_evidence,
     deduplicate_evidence,
@@ -93,6 +95,20 @@ def test_sanitize_raw_data_size_capping() -> None:
     assert sanitized["registered_domain"] == "example.com"
 
 
+def test_sanitize_raw_data_nested_structures() -> None:
+    """Verify nested lists, tuples, dicts, and objects are safely sanitized."""
+    complex_dict: dict[str, Any] = {
+        "list_items": ["item1", 123, True, {"nested": "value"}],
+        "tuple_items": (456, "string_in_tuple"),
+        "dict_items": {"k1": "v1", "k2": 2},
+        "custom_obj": object(),
+    }
+    sanitized = sanitize_raw_data(complex_dict)
+    assert len(sanitized["list_items"]) == 4
+    assert sanitized["dict_items"]["k1"] == "v1"
+    assert "object at" in str(sanitized["custom_obj"])
+
+
 def test_create_evidence_truncation() -> None:
     """Verify description is truncated with ellipsis if exceeding max length."""
     long_desc = "A" * 600
@@ -175,3 +191,15 @@ def test_run_analyzer_exception_trapping() -> None:
     assert res.status == "error"
     assert res.error == "ValueError"
     assert res.evidence == []
+
+
+@pytest.mark.asyncio
+async def test_run_analyzer_async_inside_running_loop() -> None:
+    """Verify run_analyzer executes async analyzers via ThreadPoolExecutor inside running loop."""
+    analyzer = DummyAsyncAnalyzer()
+    dummy_parsed = ParsedEmail(sha256="dummy")
+    res = run_analyzer(analyzer, dummy_parsed)
+    assert res.analyzer == "dummy_async"
+    assert res.status == "ok"
+    assert len(res.evidence) == 1
+    assert res.evidence[0].code == EvidenceCode.URL_ODD_PORT

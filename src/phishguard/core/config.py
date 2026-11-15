@@ -72,18 +72,61 @@ class Settings(BaseSettings):
         description="API key for Google Gemini / Vertex LLM access.",
     )
 
-    # Threat intelligence provider keys
+    # Threat intelligence provider keys and limits
+    PHISHGUARD_INTEL_DEADLINE_SECONDS: float = Field(
+        default=8.0,
+        ge=0.01,
+        description="Overall timeout deadline in seconds for threat intelligence queries.",
+    )
+    PHISHGUARD_INTEL_MAX_INDICATORS: int = Field(
+        default=5,
+        ge=1,
+        description="Maximum total indicators queried per scan.",
+    )
+    PHISHGUARD_INTEL_SEND_FULL_URLS: bool = Field(
+        default=False,
+        description="Whether to send full URLs including queries and fragments to external intel.",
+    )
+    VIRUSTOTAL_ENABLED: bool = Field(
+        default=True,
+        description="Whether VirusTotal provider lookups are enabled.",
+    )
+    URLHAUS_ENABLED: bool = Field(
+        default=True,
+        description="Whether URLhaus provider lookups are enabled.",
+    )
+    OPENPHISH_ENABLED: bool = Field(
+        default=True,
+        description="Whether OpenPhish community feed lookups are enabled.",
+    )
+    SAFEBROWSING_ENABLED: bool = Field(
+        default=True,
+        description="Whether Google Safe Browsing lookups are enabled.",
+    )
+    URLSCAN_ENABLED: bool = Field(
+        default=True,
+        description="Whether urlscan.io search lookups are enabled.",
+    )
     VIRUSTOTAL_API_KEY: SecretStr | None = Field(
         default=None,
         description="API key for VirusTotal reputation lookups.",
     )
+    URLHAUS_AUTH_KEY: SecretStr | None = Field(
+        default=None,
+        description="Auth key for abuse.ch URLhaus API lookups.",
+    )
     URLSCAN_API_KEY: SecretStr | None = Field(
         default=None,
-        description="API key for urlscan.io intelligence submission and lookup.",
+        description="API key for urlscan.io intelligence search lookups.",
     )
     GOOGLE_SAFE_BROWSING_KEY: SecretStr | None = Field(
         default=None,
         description="API key for Google Safe Browsing API lookups.",
+    )
+    OPENPHISH_MAX_FEED_BYTES: int = Field(
+        default=2 * 1024 * 1024,
+        ge=1024,
+        description="Maximum byte size cap when downloading the OpenPhish feed.",
     )
     INTEL_CACHE_TTL_HOURS: int = Field(
         default=24,

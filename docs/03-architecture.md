@@ -163,6 +163,20 @@ Evidence `code` values are a stable vocabulary documented in the analyzers' modu
 | Attachment | `ATT_RTLO_CHAR` | CRITICAL | Right-to-Left Override (\u202e) character in filename |
 | Attachment | `ATT_MIME_MISMATCH` | HIGH | Document extension conflicts with executable MIME type |
 | Attachment | `ATT_OVERSIZED` | LOW | Attachment size exceeds 25 MB threshold |
+| Threat Intel | `INTEL_CONFIRMED_MALICIOUS` | CRITICAL | Exact URL or attachment hash confirmed malicious (rubric floor 85) |
+| Threat Intel | `INTEL_SUSPICIOUS` | MEDIUM | Domain or indicator flagged suspicious by threat intelligence |
+| Threat Intel | `INTEL_NOT_LISTED` | INFO | Queried indicators report clean / no threat intelligence history |
+
+### Threat Intelligence Indicator Selection & Verdict Rules
+- **Pure Function Selector (`select_indicators`)**: Evaluates `ParsedEmail` without external I/O. Prioritizes:
+  1. Attachment SHA-256 hashes (`FR-ATT-3`).
+  2. Flagged URLs (link-mismatch, punycode/IDN, shorteners, suspicious TLDs, IP literals).
+  3. Remaining unique registered domains.
+- **SSRF / IP Sanitization**: Drops private, loopback, link-local, and reserved IP addresses before lookups.
+- **Verdict Thresholds**:
+  - `INTEL_CONFIRMED_MALICIOUS`: Strictly restricted to exact-URL matches (URLhaus, OpenPhish, Safe Browsing) or file-hash matches (VirusTotal engines $\ge 5$). Sets a hard rubric floor of 85.
+  - `INTEL_SUSPICIOUS`: Domain/host-level matches cap at `INTEL_SUSPICIOUS` (`Severity.MEDIUM`).
+  - `INTEL_NOT_LISTED`: Emitted at most once per scan when queried indicators are clean with no malicious/suspicious findings.
 
 ## 6. Scoring rubric (verdict agent)
 1. Each `Evidence` contributes `weight(severity) × confidence × analyzer_weight`.

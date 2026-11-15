@@ -127,8 +127,8 @@ Tick when implemented and tested.
 | FR-HDR | ☑ (FR-HDR-1 to FR-HDR-5) | ☑ | ☑ |
 | FR-URL | ☑ (FR-URL-1 to FR-URL-5) | ☑ | ☑ |
 | FR-CNT | ☑ (FR-CNT-1 to FR-CNT-3) | ☑ | ☑ |
-| FR-ATT | ☑ (FR-ATT-1 to FR-ATT-2) | ☑ | ☑ |
-| FR-INT | ☐ | ☐ | ☐ |
+| FR-ATT | ☑ (FR-ATT-1 to FR-ATT-3) | ☑ | ☑ |
+| FR-INT | ☑ (FR-INT-1 to FR-INT-5) | ☑ | ☑ |
 | FR-ML | ☐ | ☐ | ☐ |
 | FR-AGT / FR-VER | ☐ | ☐ | ☐ |
 | FR-API / FR-UI | ☐ | ☐ | ☐ |

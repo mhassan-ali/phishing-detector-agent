@@ -1,5 +1,7 @@
 """Unit tests for URL normalization, tracking parameter stripping, and IP obfuscation handling."""
 
+import ipaddress
+
 import pytest
 
 from phishguard.ingest.normalizer import TLD_EXTRACTOR, normalize_url
@@ -182,3 +184,37 @@ def test_normalizer_ip_and_scheme_edge_cases() -> None:
     # Malformed URL triggering urlsplit ValueError
     with pytest.raises(ValueError, match="Malformed URL structure"):
         normalize_url("http://[invalid-ipv6")
+
+
+def test_normalizer_idna_and_ip_coverage_branches(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Verify branches for invalid bracketed host, IDNAError fallback, and empty label host."""
+    import idna
+
+    # 1. Bracketed host where IPv6Address raises ValueError on second check (hits line 205-206)
+    calls = 0
+    orig_ipv6 = ipaddress.IPv6Address
+
+    def mock_ipv6(val: str | int) -> ipaddress.IPv6Address:
+        nonlocal calls
+        calls += 1
+        if calls > 1:
+            raise ValueError("Simulated IPv6 check failure")
+        return orig_ipv6(val)
+
+    monkeypatch.setattr("ipaddress.IPv6Address", mock_ipv6)
+    norm_bracket = normalize_url("http://[::1]/path")
+    assert norm_bracket.host == "[::1]"
+    assert norm_bracket.is_ip_literal is False
+    monkeypatch.undo()
+
+    # 2. Host with only dots (hits line 280-283)
+    norm_dots = normalize_url("http://.../path")
+    assert norm_dots.domain == "..."
+
+    # 3. idna.encode raising IDNAError (hits line 243-244)
+    def mock_idna_encode(val: str) -> bytes:
+        raise idna.IDNAError("Simulated IDNA failure")
+
+    monkeypatch.setattr("idna.encode", mock_idna_encode)
+    norm_idna = normalize_url("http://example.com/test")
+    assert norm_idna.host_punycode == "example.com"
